@@ -114,8 +114,10 @@ fi
 
 echo "Node: $(node -v) | npm: $(npm -v)"
 
-# Instala/actualiza paquetes CLI sin tocar sus directorios de configuración.
-npm install --global opencode-ai
+# OpenChamber 2.x requiere OpenCode CLI 2.0.15 o posterior.
+# Retira el paquete antiguo de OpenCode 1.x para evitar binarios opencode en conflicto.
+npm uninstall --global opencode-ai || true
+npm install --global @opencode/cli@latest
 npm install --global @openchamber/web
 
 mkdir -p /root/.config/opencode /root/.local/share/opencode /root/.config/openchamber /root/.config/gh /root/.ssh /root/termux
