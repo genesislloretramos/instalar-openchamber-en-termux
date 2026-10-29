@@ -4,6 +4,9 @@
 # ==============================================================================
 set -euo pipefail
 
+# Evitar SIGKILL (signal 9) en subprocesos https de APT tras actualizar termux-exec en caliente
+unset LD_PRELOAD
+
 PORT="${PORT:-3000}"
 PIN="${PIN:-$(shuf -i 1000-9999 -n 1)}"
 UBUNTU_ROOT="$PREFIX/var/lib/proot-distro/installed-rootfs/ubuntu"
@@ -12,13 +15,13 @@ echo -e "\n\033[1;36m=== [1/6] Preparando entorno nativo de Termux y GitHub CLI 
 termux-wake-lock 2>/dev/null || true
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get update -y </dev/null
-apt-get upgrade -y \
-  -o Dpkg::Options::="--force-confdef" \
-  -o Dpkg::Options::="--force-confold" </dev/null
 
 # Instalar dependencias base + GitHub CLI (gh) y OpenSSH en Termux
-apt-get install -y proot-distro curl git wget gh openssh procps </dev/null
+apt-get update -y </dev/null
+apt-get install -y \
+  -o Dpkg::Options::="--force-confdef" \
+  -o Dpkg::Options::="--force-confold" \
+  proot-distro curl git wget gh openssh procps </dev/null
 
 echo -e "\n\033[1;36m=== [2/6] Verificando contenedor Ubuntu (proot-distro) ===\033[0m"
 if [ ! -d "$UBUNTU_ROOT" ]; then
@@ -74,12 +77,14 @@ rm -f "$UBUNTU_ROOT/tmp/setup_inner.sh"
 echo -e "\n\033[1;36m=== [4/6] Creando comandos puente (wrappers) fuera de proot ===\033[0m"
 cat << 'WRAPPER_OC' > "$PREFIX/bin/opencode"
 #!/data/data/com.termux/files/usr/bin/bash
+unset LD_PRELOAD
 CURRENT_DIR="$(pwd)"
 exec proot-distro login ubuntu --shared-tmp --bind "$HOME:/root/termux" -- bash -lc "cd \"$CURRENT_DIR\" 2>/dev/null || cd /root; exec opencode \"\$@\""
 WRAPPER_OC
 
 cat << 'WRAPPER_OCH' > "$PREFIX/bin/openchamber"
 #!/data/data/com.termux/files/usr/bin/bash
+unset LD_PRELOAD
 CURRENT_DIR="$(pwd)"
 exec proot-distro login ubuntu --shared-tmp --bind "$HOME:/root/termux" -- bash -lc "cd \"$CURRENT_DIR\" 2>/dev/null || cd /root; exec openchamber \"\$@\""
 WRAPPER_OCH
@@ -120,7 +125,6 @@ if ! gh auth status >/dev/null 2>&1; then
     gh auth login -p https -w </dev/tty || true
 fi
 
-# Configurar automáticamente user.name y user.email de Git usando los datos de la cuenta de GitHub conectada
 if gh auth status >/dev/null 2>&1; then
     gh auth setup-git
     GH_USER="$(gh api user -q '.login' 2>/dev/null || true)"
@@ -133,13 +137,10 @@ if gh auth status >/dev/null 2>&1; then
     echo -e "\033[1;32m✔ Cuenta de GitHub (@${GH_USER}) vinculada en Termux y OpenChamber.\033[0m"
 fi
 
-# Detener cualquier instancia previa de openchamber si existiera
 pkill -f "openchamber" 2>/dev/null || true
 
-# Guardar el PIN actual para consulta futura (~/.openchamber_pin)
 echo "$PIN" > "$HOME/.openchamber_pin"
 
-# Iniciar OpenChamber en segundo plano en 0.0.0.0:3000 con el PIN generado
 nohup openchamber --lan --port "$PORT" --ui-password "$PIN" > "$HOME/.openchamber.log" 2>&1 &
 sleep 3
 
