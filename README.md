@@ -55,7 +55,7 @@ openchamber stop
 PORT=3001 openchamber start
 ```
 
-OpenChamber inicia en segundo plano con el comportamiento normal de su CLI. Para controlarlo usa los comandos puente de Termux; no ejecutes el CLI dentro de una shell Ubuntu separada si necesitas que use el mismo contexto de configuración.
+El comando puente `openchamber start` mantiene el servidor en primer plano. Es intencional: dentro de PRoot, los procesos daemonizados pueden desaparecer cuando termina la sesión de `proot-distro`. Deja esa sesión de Termux abierta mientras uses el servidor; pulsa `Ctrl+C` para detenerlo. Los comandos `status`, `logs`, `restart` y `stop` se ejecutan desde otra sesión de Termux.
 
 ## Proyectos
 
@@ -141,7 +141,7 @@ openchamber logs
 openchamber restart
 ```
 
-Comprueba que estás abriendo `http://127.0.0.1:3000` en el mismo dispositivo y que Termux sigue activo.
+Deja abierta la sesión donde ejecutaste `openchamber start` (debe permanecer en primer plano). En otra sesión de Termux, prueba `curl -i http://127.0.0.1:3000/`. Abre `http://127.0.0.1:3000` en el mismo móvil. Si el proceso se ha cerrado, vuelve a iniciarlo.
 
 **GitHub no está autenticado o el código de dispositivo ha caducado**
 
