@@ -19,7 +19,7 @@ El script también instala/actualiza las dependencias de Termux y los paquetes d
 - Termux: `proot-distro`, Git, GitHub CLI, OpenSSH y utilidades.
 - Ubuntu dentro de `proot-distro`; una instalación preexistente se conserva.
 - Node.js 24.14 o superior, requisito actual de OpenChamber Web.
-- OpenCode CLI mediante npm (`opencode-ai`).
+- OpenCode CLI 2 mediante npm (`@opencode/cli`), compatible con OpenChamber 2.x (mínimo OpenCode 2.0.15).
 - OpenChamber Web mediante npm (`@openchamber/web`).
 - GitHub CLI oficial dentro de Ubuntu y autenticación por navegador.
 - Comandos puente `opencode` y `openchamber` en Termux.
@@ -82,7 +82,7 @@ Si omites el inicio de sesión durante la instalación, puedes completarlo despu
 
 ## Datos, actualizaciones y registros
 
-El instalador no ejecuta `proot-distro reset` ni `proot-distro remove` y no borra las carpetas de configuración existentes.
+El instalador no ejecuta `proot-distro reset` ni `proot-distro remove` y no borra las carpetas de configuración existentes. El paquete antiguo `opencode-ai` (OpenCode 1.x) se desinstala para evitar conflictos con el CLI 2; esto no borra la configuración de OpenCode ni los proyectos.
 
 Ubicaciones principales:
 
