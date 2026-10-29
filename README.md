@@ -70,15 +70,41 @@ Dentro del entorno de OpenCode, la ruta compartida es `/root/termux/proyectos/mi
 
 ## GitHub CLI
 
-La autenticación se realiza dentro de Ubuntu:
+La autenticación se realiza dentro de Ubuntu. Si durante la instalación el código de dispositivo caduca, no es necesario reinstalar OpenCode ni OpenChamber: vuelve a iniciar el proceso de autenticación desde Termux.
+
+### Iniciar sesión o renovar la autenticación
+
+Ejecuta en Termux:
 
 ```bash
-gh auth status
-gh auth login
-gh repo clone OWNER/REPO
+proot-distro login ubuntu --shared-tmp -- gh auth login --hostname github.com --git-protocol https --web
 ```
 
-Si omites el inicio de sesión durante la instalación, puedes completarlo después con `gh auth login`. La configuración de Git existente no se reemplaza; si `user.name` o `user.email` están vacíos, se completan a partir de la cuenta autenticada.
+Cuando aparezca el código de un solo uso:
+
+1. Abre [github.com/login/device](https://github.com/login/device) en el navegador.
+2. Introduce el código nuevo que aparece en Termux.
+3. Autoriza el acceso a GitHub.
+
+No reutilices un código anterior: los códigos de dispositivo caducan. Si aparece `Failed to copy one-time code to clipboard`, puedes copiar el código manualmente desde Termux; ese aviso por sí solo no impide continuar.
+
+### Verificar y configurar Git
+
+Después de autorizar el acceso, ejecuta:
+
+```bash
+proot-distro login ubuntu --shared-tmp -- gh auth setup-git
+proot-distro login ubuntu --shared-tmp -- gh auth status
+```
+
+Para clonar un repositorio:
+
+```bash
+proot-distro login ubuntu --shared-tmp -- gh repo clone OWNER/REPO
+```
+
+La configuración de Git existente no se reemplaza; si `user.name` o `user.email` están vacíos, el instalador los completa a partir de la cuenta autenticada.
+
 
 ## Datos, actualizaciones y registros
 
@@ -117,11 +143,9 @@ openchamber restart
 
 Comprueba que estás abriendo `http://127.0.0.1:3000` en el mismo dispositivo y que Termux sigue activo.
 
-**GitHub no está autenticado**
+**GitHub no está autenticado o el código de dispositivo ha caducado**
 
-```bash
-proot-distro login ubuntu -- gh auth login
-```
+Sigue los pasos de [GitHub CLI: iniciar sesión o renovar la autenticación](#iniciar-sesión-o-renovar-la-autenticación). No hace falta volver a ejecutar el instalador.
 
 ## Documentación oficial
 
