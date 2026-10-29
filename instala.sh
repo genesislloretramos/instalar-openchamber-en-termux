@@ -66,9 +66,10 @@ else
     success "Ubuntu ya está instalado; se conserva su sistema de archivos."
 fi
 
-mkdir -p "$UBUNTU_ROOT/tmp" "$UBUNTU_ROOT/root/termux"
+mkdir -p "$UBUNTU_ROOT/root/.cache" "$UBUNTU_ROOT/root/termux"
 
-INNER_SCRIPT="$UBUNTU_ROOT/tmp/setup_openchamber_termux.sh"
+# No usar /tmp: --shared-tmp lo monta desde Termux y oculta el /tmp de Ubuntu.
+INNER_SCRIPT="$UBUNTU_ROOT/root/.cache/setup_openchamber_termux.sh"
 cat > "$INNER_SCRIPT" <<'UBUNTU_SCRIPT'
 #!/bin/bash
 set -Eeuo pipefail
@@ -126,7 +127,8 @@ echo "Entorno Ubuntu preparado."
 UBUNTU_SCRIPT
 chmod 700 "$INNER_SCRIPT"
 
-proot-distro login ubuntu --shared-tmp -- bash /tmp/setup_openchamber_termux.sh
+proot-distro login ubuntu --shared-tmp -- bash /root/.cache/setup_openchamber_termux.sh
+rm -f "$INNER_SCRIPT"
 
 info ""
 info "=== [3/5] Creando comandos puente ==="
