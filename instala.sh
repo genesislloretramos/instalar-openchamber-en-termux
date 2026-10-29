@@ -123,7 +123,9 @@ case "$COMMAND" in
         exec proot-distro login ubuntu --shared-tmp --bind "$HOME:/root/termux" -- env OPENCHAMBER_HOST="$HOST" OPENCHAMBER_UI_PASSWORD="$PIN" bash -c '
             TARGET="$1"; PORT="$2"; shift 2
             if [[ -d "$TARGET" ]]; then cd "$TARGET"; else cd /root; fi
-            exec openchamber --host 127.0.0.1 --port "$PORT" --ui-password "$OPENCHAMBER_UI_PASSWORD" "$@"
+            # PRoot puede terminar los procesos que OpenChamber daemoniza al salir.
+            # Mantener el servidor en primer plano conserva vivo el proceso de proot-distro.
+            exec openchamber --foreground --host 127.0.0.1 --port "$PORT" --ui-password "$OPENCHAMBER_UI_PASSWORD" "$@"
         ' _ "$UBUNTU_DIR" "$PORT" "$@"
         ;;
     stop|status|restart|logs)
