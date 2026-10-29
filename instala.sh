@@ -127,7 +127,9 @@ echo "Entorno Ubuntu preparado."
 UBUNTU_SCRIPT
 chmod 700 "$INNER_SCRIPT"
 
-proot-distro login ubuntu --shared-tmp -- bash /root/.cache/setup_openchamber_termux.sh
+# Ejecutar el auxiliar por stdin evita depender de que una ruta del rootfs
+# sea visible/mapeada igual dentro de proot.
+proot-distro login ubuntu --shared-tmp -- bash -s < "$INNER_SCRIPT"
 rm -f "$INNER_SCRIPT"
 
 info ""
