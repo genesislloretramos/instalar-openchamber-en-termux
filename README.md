@@ -10,5 +10,5 @@ Para que sea todo muy fácil de instalar, este repositorio tiene un script 100% 
 
 ## Comando ejecución en Termux
 ```
-pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" && bash <(curl -fsSL https://raw.githubusercontent.com/genesislloretramos/instalar-openchamber-en-termux/main/instala.sh)
+pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" && unset LD_PRELOAD && bash <(curl -fsSL https://raw.githubusercontent.com/genesislloretramos/instalar-openchamber-en-termux/main/instala.sh)
 ```
