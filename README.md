@@ -127,7 +127,7 @@ proot-distro login ubuntu -- gh auth login
 
 - [Termux](https://termux.dev/)
 - [PRoot-Distro](https://github.com/termux/proot-distro)
-- [OpenCode: instalación](https://dev.opencode.ai/docs/)
+- [OpenCode 2: instalación](https://opencode.ai/v2/docs/)
 - [OpenChamber: instalación](https://docs.openchamber.dev/install/)
 - [OpenChamber: servidor y comandos](https://docs.openchamber.dev/opencode-server/)
 - [GitHub CLI: manual](https://cli.github.com/manual/)
